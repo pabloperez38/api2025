@@ -12,8 +12,18 @@ class ProductoController extends Controller
      */
     public function index()
     {
-        //$datos = Producto::orderBy('nombre', 'desc')->select('id', 'nombre', 'descripcion', 'stock', 'precio', 'disponible', 'fecha_vencimiento', 'categoria_id')->get();
-        $datos = Producto::with('categoria')->get();
+        $datos = Producto::with('categoria:id,nombre')->get()->map(function ($producto) {
+            return [
+                'id' => $producto->id,
+                'nombre' => $producto->nombre,
+                'descripcion' => $producto->descripcion,
+                'stock' => $producto->stock,
+                'precio' => $producto->precio,
+                'peso' => $producto->peso,
+                'disponible' => $producto->disponible,
+                'categoria' => $producto->categoria->nombre, // solo el nombre
+            ];
+        });
         return response()->json($datos, 200);
     }
 
@@ -27,6 +37,7 @@ class ProductoController extends Controller
 
     /**
      * Display the specified resource.
+     * Mostrar un solo producto
      */
     public function show(Producto $producto)
     {
