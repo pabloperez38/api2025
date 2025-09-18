@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\ProductoController;
 use Illuminate\Http\Request;
@@ -21,3 +22,5 @@ Route::patch('productos/{producto}', [ProductoController::class, 'update']);
 
 // DELETE → Eliminar
 Route::delete('productos/{producto}', [ProductoController::class, 'destroy']);
+
+Route::post('/register', [AuthController::class, 'register']);
