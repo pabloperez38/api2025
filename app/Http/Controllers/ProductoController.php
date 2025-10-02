@@ -8,7 +8,15 @@ use Illuminate\Http\Request;
 class ProductoController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * @OA\Get(
+     * path="/api/productos",
+     * summary="Obtener lista de productos",
+     * tags={"Productos"},
+     * @OA\Response(
+     * response=200,
+     * description="Lista de productos obtenida correctamente"
+     * )
+     * )
      */
     public function index()
     {
@@ -27,8 +35,65 @@ class ProductoController extends Controller
         return response()->json($datos, 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
+     /**
+     * @OA\Post(
+     *     path="/api/productos",
+     *     summary="Crear un nuevo producto",
+     *     description="Crea un producto con los datos enviados en el cuerpo de la petición.",
+     *     tags={"Productos"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"nombre","stock","precio","categoria_id"},
+     *             @OA\Property(property="nombre", type="string", maxLength=150, example="Laptop Gamer"),
+     *             @OA\Property(property="descripcion", type="string", nullable=true, example="Laptop con 16GB RAM y RTX 4060"),
+     *             @OA\Property(property="stock", type="integer", minimum=0, example=20),
+     *             @OA\Property(property="precio", type="number", format="float", minimum=0, example=1500.50),
+     *             @OA\Property(property="peso", type="number", format="float", nullable=true, minimum=0.01, example=2.5),
+     *             @OA\Property(property="disponible", type="boolean", example=true),
+     *             @OA\Property(property="fecha_vencimiento", type="string", format="date", nullable=true, example="2025-12-31"),
+     *             @OA\Property(property="publicado_en", type="string", format="date-time", nullable=true, example="2025-09-30T12:30:00Z"),
+     *             @OA\Property(property="categoria_id", type="integer", example=3, description="ID de una categoría existente")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Producto creado correctamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Producto creado correctamente"),
+     *             @OA\Property(property="producto", type="object",
+     *                 @OA\Property(property="id", type="integer", example=10),
+     *                 @OA\Property(property="nombre", type="string", example="Laptop Gamer"),
+     *                 @OA\Property(property="descripcion", type="string", example="Laptop con 16GB RAM y RTX 4060"),
+     *                 @OA\Property(property="stock", type="integer", example=20),
+     *                 @OA\Property(property="precio", type="number", format="float", example=1500.50),
+     *                 @OA\Property(property="peso", type="number", format="float", example=2.5),
+     *                 @OA\Property(property="disponible", type="boolean", example=true),
+     *                 @OA\Property(property="fecha_vencimiento", type="string", format="date", example="2025-12-31"),
+     *                 @OA\Property(property="publicado_en", type="string", format="date-time", example="2025-09-30T12:30:00Z"),
+     *                 @OA\Property(property="categoria_id", type="integer", example=3),
+     *                 @OA\Property(property="created_at", type="string", format="date-time", example="2025-09-30T13:00:00Z"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time", example="2025-09-30T13:00:00Z")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Error de validación",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Datos inválidos"),
+     *             @OA\Property(property="errors", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Error interno al crear el producto"),
+     *             @OA\Property(property="error", type="string", example="SQLSTATE[23000]: Integrity constraint violation...")
+     *         )
+     *     )
+     * )
      */
     public function store(Request $request)
     {
@@ -122,10 +187,48 @@ class ProductoController extends Controller
             'producto' => $producto
         ], 201);
     } */
-    /**
-     * Display the specified resource.
-     * Mostrar un solo producto
+     /**
+     * @OA\Get(
+     *     path="/api/productos/{id}",
+     *     summary="Obtener un producto por ID",
+     *     description="Devuelve la información de un producto específico según su ID.",
+     *     tags={"Productos"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID del producto",
+     *         @OA\Schema(type="integer", example=10)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Producto encontrado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="id", type="integer", example=10),
+     *             @OA\Property(property="nombre", type="string", example="Laptop Gamer"),
+     *             @OA\Property(property="descripcion", type="string", example="Laptop con 16GB RAM y RTX 4060"),
+     *             @OA\Property(property="stock", type="integer", example=20),
+     *             @OA\Property(property="precio", type="number", format="float", example=1500.50),
+     *             @OA\Property(property="peso", type="number", format="float", example=2.5),
+     *             @OA\Property(property="disponible", type="boolean", example=true),
+     *             @OA\Property(property="fecha_vencimiento", type="string", format="date", example="2025-12-31"),
+     *             @OA\Property(property="publicado_en", type="string", format="date-time", example="2025-09-30T12:30:00Z"),
+     *             @OA\Property(property="categoria_id", type="integer", example=1),
+     *             @OA\Property(property="created_at", type="string", format="date-time", example="2025-09-30T13:00:00Z"),
+     *             @OA\Property(property="updated_at", type="string", format="date-time", example="2025-09-30T13:00:00Z")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Producto no encontrado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Producto no encontrado")
+     *         )
+     *     )
+     * )
      */
+
+
     public function show(Producto $producto)
     {
         $producto->load('categoria');
@@ -180,6 +283,74 @@ class ProductoController extends Controller
             'producto' => $producto
         ], 200);
     } */
+
+        /**
+     * @OA\Put(
+     *     path="/api/productos/{id}",
+     *     summary="Actualizar un producto existente",
+     *     description="Actualiza los datos de un producto según su ID.",
+     *     tags={"Productos"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID del producto a actualizar",
+     *         @OA\Schema(type="integer", example=10)
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"nombre","stock","precio","categoria_id"},
+     *             @OA\Property(property="nombre", type="string", maxLength=150, example="Laptop Gamer Actualizada"),
+     *             @OA\Property(property="descripcion", type="string", nullable=true, example="Laptop con 16GB RAM y RTX 4060"),
+     *             @OA\Property(property="stock", type="integer", minimum=0, example=25),
+     *             @OA\Property(property="precio", type="number", format="float", minimum=0, example=1550.75),
+     *             @OA\Property(property="peso", type="number", format="float", nullable=true, minimum=0.01, example=2.5),
+     *             @OA\Property(property="disponible", type="boolean", example=true),
+     *             @OA\Property(property="fecha_vencimiento", type="string", format="date", nullable=true, example="2025-12-31"),
+     *             @OA\Property(property="publicado_en", type="string", format="date-time", nullable=true, example="2025-09-30T12:30:00Z"),
+     *             @OA\Property(property="categoria_id", type="integer", example=3, description="ID de una categoría existente")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Producto actualizado correctamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Producto actualizado correctamente"),
+     *             @OA\Property(property="producto", type="object",
+     *                 @OA\Property(property="id", type="integer", example=10),
+     *                 @OA\Property(property="nombre", type="string", example="Laptop Gamer Actualizada"),
+     *                 @OA\Property(property="descripcion", type="string", example="Laptop con 16GB RAM y RTX 4060"),
+     *                 @OA\Property(property="stock", type="integer", example=25),
+     *                 @OA\Property(property="precio", type="number", format="float", example=1550.75),
+     *                 @OA\Property(property="peso", type="number", format="float", example=2.5),
+     *                 @OA\Property(property="disponible", type="boolean", example=true),
+     *                 @OA\Property(property="fecha_vencimiento", type="string", format="date", example="2025-12-31"),
+     *                 @OA\Property(property="publicado_en", type="string", format="date-time", example="2025-09-30T12:30:00Z"),
+     *                 @OA\Property(property="categoria_id", type="integer", example=3),
+     *                 @OA\Property(property="created_at", type="string", format="date-time", example="2025-09-30T13:00:00Z"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time", example="2025-09-30T14:15:00Z")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Error de validación",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Datos inválidos"),
+     *             @OA\Property(property="errors", type="object")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Error interno al actualizar el producto"),
+     *             @OA\Property(property="error", type="string", example="SQLSTATE[23000]: Integrity constraint violation...")
+     *         )
+     *     )
+     * )
+     */
     public function update(Request $request, Producto $producto)
     {
         try {
@@ -224,8 +395,42 @@ class ProductoController extends Controller
             ], 500);
         }
     }
-    /**
-     * Remove the specified resource from storage.
+     /**
+     * @OA\Delete(
+     *     path="/api/productos/{id}",
+     *     summary="Eliminar un producto",
+     *     description="Elimina un producto existente según su ID.",
+     *     tags={"Productos"},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         required=true,
+     *         description="ID del producto a eliminar",
+     *         @OA\Schema(type="integer", example=10)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Producto eliminado correctamente",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Producto eliminado correctamente")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Producto no encontrado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Producto no encontrado")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="Error interno al eliminar el producto"),
+     *             @OA\Property(property="error", type="string", example="SQLSTATE[23000]: Integrity constraint violation...")
+     *         )
+     *     )
+     * )
      */
     public function destroy(?Producto $producto)
     {

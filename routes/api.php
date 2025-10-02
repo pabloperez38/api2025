@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::apiResource('categorias', CategoriaController::class);
-//Route::apiResource('productos', ProductoController::class)->middleware('auth:api');
+Route::apiResource('productos', ProductoController::class);
 
 // GET → Listar todos
 //Route::get('productos', [ProductoController::class, 'index'])->middleware('auth:api');
@@ -23,10 +23,11 @@ Route::apiResource('categorias', CategoriaController::class);
 // DELETE → Eliminar
 //Route::delete('productos/{producto}', [ProductoController::class, 'destroy']);
 
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
+// Route::post('/register', [AuthController::class, 'register']);
+// Route::post('/login', [AuthController::class, 'login']);
 
-Route::group(['middleware' => ['auth:api']], function () {
- Route::get('/productos', [ProductoController::class, 'index']);
- Route::post('/logout', [AuthController::class, 'logout']);
-});
+// Route::group(['middleware' => ['auth:api']], function () {
+//  Route::get('/productos', [ProductoController::class, 'index']);
+//  Route::post('/productos', [ProductoController::class, 'store']);
+//  Route::post('/logout', [AuthController::class, 'logout']);
+// });
