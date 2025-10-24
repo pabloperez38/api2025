@@ -7,15 +7,23 @@ use Illuminate\Http\Request;
 
 class ProductoController extends Controller
 {
-    /**
+     /**
      * @OA\Get(
-     * path="/api/productos",
-     * summary="Obtener lista de productos",
-     * tags={"Productos"},
-     * @OA\Response(
-     * response=200,
-     * description="Lista de productos obtenida correctamente"
-     * )
+     *     path="/api/productos",
+     *     summary="Obtener lista de productos",
+     *     security={{"bearerAuth":{}}},
+     *     tags={"Productos"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Lista de productos obtenida correctamente"
+     *     ),
+     *    @OA\Response(
+     *         response=401,
+     *         description="No autorizado - Token ausente o inválido",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="error", type="string", example="No autenticado o token inválido")
+     *         )
+     *     ),
      * )
      */
     public function index()
@@ -105,9 +113,7 @@ class ProductoController extends Controller
                 'stock'             => 'required|integer|min:0',
                 'precio'            => 'required|numeric|min:0',
                 'peso'              => 'nullable|numeric|min:0.01',
-                'disponible'        => 'boolean',
-                'fecha_vencimiento' => 'nullable|date|after:today',
-                'publicado_en'      => 'nullable|date|before_or_equal:now',
+                'disponible'        => 'boolean',              
                 'categoria_id'      => 'required|exists:categorias,id',
             ]);
 
@@ -118,9 +124,7 @@ class ProductoController extends Controller
             $producto->stock             = $validated['stock'];
             $producto->precio            = $validated['precio'];
             $producto->peso              = $validated['peso'] ?? null;
-            $producto->disponible        = $validated['disponible'] ?? true;
-            $producto->fecha_vencimiento = $validated['fecha_vencimiento'] ?? null;
-            $producto->publicado_en      = $validated['publicado_en'] ?? null;
+            $producto->disponible        = $validated['disponible'] ?? true;          
             $producto->categoria_id      = $validated['categoria_id'];
             $producto->save();
 
@@ -188,11 +192,13 @@ class ProductoController extends Controller
         ], 201);
     } */
      /**
+     /**
      * @OA\Get(
      *     path="/api/productos/{id}",
      *     summary="Obtener un producto por ID",
      *     description="Devuelve la información de un producto específico según su ID.",
      *     tags={"Productos"},
+     *     security={{"bearerAuth":{}}},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
@@ -284,12 +290,13 @@ class ProductoController extends Controller
         ], 200);
     } */
 
-        /**
+       /**
      * @OA\Put(
      *     path="/api/productos/{id}",
      *     summary="Actualizar un producto existente",
      *     description="Actualiza los datos de un producto según su ID.",
      *     tags={"Productos"},
+     *      security={{"bearerAuth":{}}},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",
@@ -361,9 +368,7 @@ class ProductoController extends Controller
                 'stock'             => 'required|integer|min:0',
                 'precio'            => 'required|numeric|min:0',
                 'peso'              => 'nullable|numeric|min:0.01',
-                'disponible'        => 'boolean',
-                'fecha_vencimiento' => 'nullable|date|after:today',
-                'publicado_en'      => 'nullable|date|before_or_equal:now',
+                'disponible'        => 'boolean',               
                 'categoria_id'      => 'required|exists:categorias,id',
             ]);
 
@@ -373,9 +378,7 @@ class ProductoController extends Controller
             $producto->stock             = $validated['stock'];
             $producto->precio            = $validated['precio'];
             $producto->peso              = $validated['peso'] ?? null;
-            $producto->disponible        = $validated['disponible'] ?? true;
-            $producto->fecha_vencimiento = $validated['fecha_vencimiento'] ?? null;
-            $producto->publicado_en      = $validated['publicado_en'] ?? null;
+            $producto->disponible        = $validated['disponible'] ?? true;          
             $producto->categoria_id      = $validated['categoria_id'];
             $producto->save();
 
@@ -395,12 +398,13 @@ class ProductoController extends Controller
             ], 500);
         }
     }
-     /**
+    /**
      * @OA\Delete(
      *     path="/api/productos/{id}",
      *     summary="Eliminar un producto",
      *     description="Elimina un producto existente según su ID.",
      *     tags={"Productos"},
+     *      security={{"bearerAuth":{}}},
      *     @OA\Parameter(
      *         name="id",
      *         in="path",

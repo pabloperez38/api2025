@@ -13,6 +13,13 @@ namespace App\Http\Controllers;
  * url="http://127.0.0.1:8000",
  * description="Servidor local"
  * )
+ *  @OA\SecurityScheme(
+ *     securityScheme="bearerAuth",
+ *     type="http",
+ *     scheme="bearer",
+ *     bearerFormat="JWT",
+ *     description="Usa un token JWT para autenticar"
+ * )
  */
 
 

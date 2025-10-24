@@ -13,7 +13,7 @@ class CategoriaController extends Controller
     public function index()
     {
         //return Categoria::all();
-       /*  $datos = Categoria::all();
+        /*  $datos = Categoria::all();
             return response()->json([
             'success' => true,
             'data' => $datos
@@ -22,7 +22,6 @@ class CategoriaController extends Controller
         //return Categoria::select('id', 'nombre')->get();
         $datos = Categoria::orderBy('nombre', 'desc')->select('id', 'nombre')->get();
         return response()->json($datos, 200);
-        
     }
 
     /**
@@ -36,9 +35,22 @@ class CategoriaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Categoria $categoria)
+    public function show($id)
     {
-        //
+        // Buscar la categoría por id y devolverla en JSON.
+        $categoria = Categoria::find($id);
+
+        if (! $categoria) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Categoria no encontrada.'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $categoria
+        ], 200);
     }
 
     /**
